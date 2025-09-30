@@ -26,9 +26,9 @@ public class PeopleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
-        return await CreateView("Create");
+        return CreateView("Create");
     }
 
     [HttpPost]
@@ -36,7 +36,7 @@ public class PeopleController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return await CreateView("Create", person);
+            return CreateView("Create", person);
         }
         await _personService.Create(person);
 
@@ -52,7 +52,7 @@ public class PeopleController : Controller
             return RedirectToAction("Index");
         }
 
-        return await CreateView("Edit", person);
+        return CreateView("Edit", person);
     }
 
     [HttpPost]
@@ -60,7 +60,7 @@ public class PeopleController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return await CreateView("Edit", person);
+            return CreateView("Edit", person);
         }
 
         await _personService.Update(id, person);

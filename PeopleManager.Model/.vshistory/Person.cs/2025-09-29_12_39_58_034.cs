@@ -19,7 +19,6 @@ namespace PeopleManager.Model
         public string? Email { get; set; }
 
         public int? FunctionId { get; set; }
-        [JsonIgnore]
-        public Function? Function { get; set; }
+        [JsonIgnore]public Function? Function { get; set; }
     }
 }

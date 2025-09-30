@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace PeopleManager.Model
 {
@@ -19,7 +18,6 @@ namespace PeopleManager.Model
         public string? Email { get; set; }
 
         public int? FunctionId { get; set; }
-        [JsonIgnore]
         public Function? Function { get; set; }
     }
 }

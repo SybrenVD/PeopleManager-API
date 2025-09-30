@@ -50,7 +50,7 @@ namespace PeopleManager.Services
 
         public async Task<Person?> Update(int id, Person person)
         {
-            var dbPerson = await Get(id);
+            var dbPerson = Get(id);
 
             if (dbPerson == null)
             {
@@ -67,9 +67,9 @@ namespace PeopleManager.Services
             return dbPerson;
         }
 
-        public async Task Delete(int id)
+        public void Delete(int id)
         {
-            var person = await Get(id);
+            var person = Get(id);
 
             if (person is null)
             {
@@ -80,7 +80,7 @@ namespace PeopleManager.Services
 
             _dbContext.People.Remove(person);
 
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
         }
     }
 }

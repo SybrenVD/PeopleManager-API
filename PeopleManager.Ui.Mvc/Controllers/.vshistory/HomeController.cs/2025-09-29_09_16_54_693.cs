@@ -10,9 +10,9 @@ public class HomeController(PersonService personService) : Controller
     private readonly PersonService _personService = personService;
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var people = await _personService.Find();
+        var people = _personService.Find();
 
         return View(people);
     }

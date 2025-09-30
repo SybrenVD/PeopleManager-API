@@ -13,23 +13,23 @@ namespace PeopleManager.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IList<Person>> Find()
+        public IList<Person> Find()
         {
-            var people = await _dbContext.People
+            var people = _dbContext.People
                 .Include(p => p.Function)
-                .ToListAsync();
+                .ToList();
             return people;
         }
 
-        public async Task<Person?> Get(int id)
+        public Person? Get(int id)
         {
-            var person = await _dbContext.People
+            var person = _dbContext.People
                 .Include(p => p.Function)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id);
             return person;
         }
 
-        public async Task<Person?> Create(Person person)
+        public Person? Create(Person person)
         {
             if (string.IsNullOrWhiteSpace(person.FirstName))
             {
@@ -42,15 +42,15 @@ namespace PeopleManager.Services
 
             _dbContext.People.Add(person);
 
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
 
             return person;
         }
 
 
-        public async Task<Person?> Update(int id, Person person)
+        public Person? Update(int id, Person person)
         {
-            var dbPerson = await Get(id);
+            var dbPerson = Get(id);
 
             if (dbPerson == null)
             {
@@ -62,14 +62,14 @@ namespace PeopleManager.Services
             dbPerson.Email = person.Email;
             dbPerson.FunctionId = person.FunctionId;
 
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
 
             return dbPerson;
         }
 
-        public async Task Delete(int id)
+        public void Delete(int id)
         {
-            var person = await Get(id);
+            var person = Get(id);
 
             if (person is null)
             {
@@ -80,7 +80,7 @@ namespace PeopleManager.Services
 
             _dbContext.People.Remove(person);
 
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
         }
     }
 }

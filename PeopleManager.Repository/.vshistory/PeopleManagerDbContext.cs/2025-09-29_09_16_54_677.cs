@@ -10,17 +10,17 @@ namespace PeopleManager.Repository
         public DbSet<Function> Functions => Set<Function>();
         public DbSet<Person> People => Set<Person>();
         
-        public async Task Seed()
+        public void Seed()
         {
-            await AddDefaultIdentityUser();
+            AddDefaultIdentityUser();
 
             var developerFunction = new Function
             {
                 Name = "Developer"
             };
-            await Functions.AddAsync(developerFunction);
+            Functions.Add(developerFunction);
 
-            await People.AddRangeAsync(new List<Person>
+            People.AddRange(new List<Person>
                 {
                     new Person { FirstName = "John", LastName = "Smith", Email = "john.smith@example.com", Function = developerFunction},
                     new Person { FirstName = "Jane", LastName = "Doe" }, // no Email
@@ -34,10 +34,10 @@ namespace PeopleManager.Repository
                     new Person { FirstName = "Peter", LastName = "Taylor", Email = "peter.taylor@example.com" }
                 });
 
-            await SaveChangesAsync();
+            SaveChanges();
         }
 
-        private async Task AddDefaultIdentityUser()
+        private void AddDefaultIdentityUser()
         {
             var email = "bavo.ketels@vives.be";
 
@@ -48,7 +48,7 @@ namespace PeopleManager.Repository
             identityUser.NormalizedEmail = email.ToUpper();
             identityUser.PasswordHash = "AQAAAAIAAYagAAAAEJb8pZkj/vdlh+joOkzrHJhUYXu+6JoLwiqL+Cs1OkviTiQKtM/dkPD2TcZ/JFUtPg=="; //Test123$
 
-            await Users.AddAsync(identityUser);
+            Users.Add(identityUser);
         }
     }
 }

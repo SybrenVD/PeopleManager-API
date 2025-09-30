@@ -80,7 +80,7 @@ namespace PeopleManager.Services
 
             _dbContext.People.Remove(person);
 
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
         }
     }
 }

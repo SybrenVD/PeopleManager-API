@@ -1,4 +1,7 @@
-﻿using PeopleManager.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using PeopleManageer.Dto.Requests;
+using PeopleManageer.Dto.Results;
+using PeopleManager.Model;
 using PeopleManager.Repository;
 
 namespace PeopleManager.Services
@@ -12,52 +15,88 @@ namespace PeopleManager.Services
             _dbContext = dbContext;
         }
 
-        public IList<Function> Find()
+        public async Task<List<FunctionResult>> Find()
         {
-            var functions = _dbContext.Functions.ToList();
-            return functions;
+            var functionsTask = await _dbContext.Functions
+                .Select(f => new FunctionResult
+                {
+                    Id = f.Id,
+                    Name = f.Name,
+                    Description = f.Description,
+                    NumberOfPeople = f.People.Count
+                }).ToListAsync();
+            return functionsTask;
         }
 
-        public Function? Get(int id)
+        // opgesplits voor duidelijkheid
+
+        //public Task<List<FunctionResult>> Find()
+        //{
+        //    var query = _dbContext.Functions
+        //        .Select(f => new FunctionResult
+        //        {
+        //            Id = f.Id,
+        //            Name = f.Name,
+        //            Description = f.Description,
+        //            NumberOfPeople = f.People.Count
+        //        });
+
+        //    var functions = query.ToListAsync();
+        //    return functions;
+        //}
+
+        public async Task<FunctionResult?> Get(int id)
         {
-            var function = _dbContext.Functions.FirstOrDefault(f => f.Id == id);
+            var function = await _dbContext.Functions
+                .Select(f => new FunctionResult
+                {
+                    Id = f.Id,
+                    Name = f.Name,
+                    Description = f.Description,
+                    NumberOfPeople = f.People.Count
+                }).FirstOrDefaultAsync(f => f.Id == id);
             return function;
         }
 
-        public Function? Create(Function function)
+        public async Task<FunctionResult?> Create(FunctionRequest request)
         {
-            if (string.IsNullOrWhiteSpace(function.Name))
+            if (string.IsNullOrWhiteSpace(request.Name))
             {
                 return null;
             }
+
+            var function = new Function
+            {
+                Name = request.Name,
+                Description = request.Description
+            };
 
             _dbContext.Functions.Add(function);
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
-            return function;
+            return await Get(function.Id);
         }
 
-        public Function? Update(int id, Function function)
+        public async Task<FunctionResult?> Update(int id, FunctionRequest request)
         {
-            var dbFunction = Get(id);
+            var function = await _dbContext.Functions
+                .FirstOrDefaultAsync(f => f.Id == id);
 
-            if (dbFunction == null)
+            if (function == null)
             {
                 return null;
             }
 
-            dbFunction.Name = function.Name;
-            dbFunction.Description = function.Description;
-            
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
-            return dbFunction;
+            return await Get(function.Id);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var function = Get(id);
+            var function = await _dbContext.Functions
+                .FirstOrDefaultAsync(f => f.Id == id);
 
             if (function is null)
             {
@@ -68,7 +107,7 @@ namespace PeopleManager.Services
 
             _dbContext.Functions.Remove(function);
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -19,51 +19,51 @@ public class PeopleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var people = await _personService.Find();
+        var people = _personService.Find();
         return View(people);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
-        return await CreateView("Create");
+        return CreateView("Create");
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Person person)
+    public IActionResult Create(Person person)
     {
         if (!ModelState.IsValid)
         {
-            return await CreateView("Create", person);
+            return CreateView("Create", person);
         }
-        await _personService.Create(person);
+        _personService.Create(person);
 
         return RedirectToAction("Index");
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit([FromRoute] int id)
+    public IActionResult Edit([FromRoute] int id)
     {
-        var person = await _personService.Get(id);
+        var person = _personService.Get(id);
         if (person is null)
         {
             return RedirectToAction("Index");
         }
 
-        return await CreateView("Edit", person);
+        return CreateView("Edit", person);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] Person person)
+    public IActionResult Edit([FromRoute] int id, [FromForm] Person person)
     {
         if (!ModelState.IsValid)
         {
-            return await CreateView("Edit", person);
+            return CreateView("Edit", person);
         }
 
-        await _personService.Update(id, person);
+        _personService.Update(id, person);
 
         return RedirectToAction("Index");
     }
@@ -71,9 +71,9 @@ public class PeopleController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    public IActionResult Delete([FromRoute] int id)
     {
-        var person = await _personService.Get(id);
+        var person = _personService.Get(id);
         if (person is null)
         {
             return RedirectToAction("Index");
@@ -83,17 +83,17 @@ public class PeopleController : Controller
 
     [HttpPost]
     [Route("[controller]/Delete/{id:int?}")]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public IActionResult DeleteConfirmed(int id)
     {
-        await _personService.Delete(id);
+        _personService.Delete(id);
 
         return RedirectToAction("Index");
     }
 
 
-    private async Task<IActionResult> CreateView([AspMvcView] string viewName, Person? person = null)
+    private IActionResult CreateView([AspMvcView] string viewName, Person? person = null)
     {
-        var functions = await _functionService.Find();
+        var functions = _functionService.Find();
         ViewBag.Functions = functions;
 
         if (person is null)
